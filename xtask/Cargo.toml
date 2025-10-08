@@ -1,0 +1,9 @@
+[package]
+name = "xtask"
+version = "0.1.0"
+edition = "2021"
+authors = ["Kayton Contributors <dev@kayton.dev>"]
+description = "Developer automation commands for the Kayton workspace"
+license = "Apache-2.0 OR MIT"
+
+[dependencies]
