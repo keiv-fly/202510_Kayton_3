@@ -1,0 +1,13 @@
+[workspace]
+members = ["xtask"]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "Apache-2.0 OR MIT"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.metadata]
+repository = "https://example.com/kayton"
