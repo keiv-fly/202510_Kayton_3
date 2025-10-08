@@ -5,7 +5,7 @@ Absolutely — here’s the **updated, exhaustive spec** with your amendment app
 
 ---
 
-# 📜 Semicolon-Free Rust (Revised Spec)
+# 📜 Kayton (Revised Spec)
 
 ## 0) Design goals
 
@@ -387,7 +387,6 @@ If any final block in the above needed to be `()`, we’d add a trailing `()` on
 ### ✅ Summary
 
 * **No semicolons**.
-* **No `discard`**.
 * Blocks/branches return their **last expression**; **end with `()`** on its own line to make the value `()`.
 * Non-final side-effects: **`let _ = expr`** (or call functions that return `()`).
 * **`elif`** replaces `else if`.
