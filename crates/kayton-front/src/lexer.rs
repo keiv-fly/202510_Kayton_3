@@ -166,11 +166,8 @@ impl<'a> Lexer<'a> {
             }
 
             if ch == '"' {
-                match self.lex_string() {
-                    Some(token) => {
-                        self.tokens.push(token);
-                    }
-                    None => {}
+                if let Some(token) = self.lex_string() {
+                    self.tokens.push(token);
                 }
                 continue;
             }

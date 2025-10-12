@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub struct SourceId(u32);
 
 impl SourceId {
@@ -10,12 +10,6 @@ impl SourceId {
 
     pub fn raw(self) -> u32 {
         self.0
-    }
-}
-
-impl Default for SourceId {
-    fn default() -> Self {
-        SourceId(0)
     }
 }
 

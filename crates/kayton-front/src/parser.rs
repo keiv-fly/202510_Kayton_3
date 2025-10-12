@@ -247,11 +247,7 @@ impl Parser {
 
     fn parse_binary_expr(&mut self, min_prec: u8) -> Option<Expr> {
         let mut left = self.parse_prefix_expr()?;
-        loop {
-            let (op, prec) = match self.peek_binary_op() {
-                Some(info) => info,
-                None => break,
-            };
+        while let Some((op, prec)) = self.peek_binary_op() {
             if prec < min_prec {
                 break;
             }
@@ -303,22 +299,17 @@ impl Parser {
 
     fn parse_postfix_expr(&mut self) -> Option<Expr> {
         let mut expr = self.parse_primary()?;
-        loop {
-            match self.peek_kind() {
-                TokenKind::LParen => {
-                    let start_span = expr.span();
-                    self.bump();
-                    let args = self.parse_argument_list()?;
-                    let end = self.expect_rparen()?.span;
-                    let span = start_span.merge(end);
-                    expr = Expr::Call(CallExpr {
-                        span,
-                        callee: Box::new(expr),
-                        args,
-                    });
-                }
-                _ => break,
-            }
+        while let &TokenKind::LParen = self.peek_kind() {
+            let start_span = expr.span();
+            self.bump();
+            let args = self.parse_argument_list()?;
+            let end = self.expect_rparen()?.span;
+            let span = start_span.merge(end);
+            expr = Expr::Call(CallExpr {
+                span,
+                callee: Box::new(expr),
+                args,
+            });
         }
         Some(expr)
     }
