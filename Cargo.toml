@@ -1,5 +1,8 @@
 [workspace]
-members = ["xtask"]
+members = [
+    "crates/kayton-front",
+    "xtask",
+]
 resolver = "2"
 
 [workspace.package]

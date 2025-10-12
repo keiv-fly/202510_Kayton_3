@@ -1,0 +1,317 @@
+---
+source: crates/kayton-front/tests/parse_snapshots.rs
+assertion_line: 52
+expression: "format!(\"{:#?}\\n---\\n{:#?}\", output.module, output.diagnostics)"
+---
+HirModule {
+    id: HirId(
+        1,
+    ),
+    items: [
+        Function(
+            HirFunction {
+                id: HirId(
+                    2,
+                ),
+                name: Symbol(
+                    0,
+                ),
+                params: [
+                    HirParam {
+                        id: HirId(
+                            3,
+                        ),
+                        name: Symbol(
+                            1,
+                        ),
+                        span: Span {
+                            source: SourceId(
+                                1,
+                            ),
+                            start: 13,
+                            end: 14,
+                        },
+                    },
+                ],
+                body: HirBlock {
+                    id: HirId(
+                        4,
+                    ),
+                    statements: [
+                        Let(
+                            HirLetBinding {
+                                id: HirId(
+                                    5,
+                                ),
+                                name: Symbol(
+                                    2,
+                                ),
+                                value: Name(
+                                    HirNameRef {
+                                        id: HirId(
+                                            6,
+                                        ),
+                                        name: Symbol(
+                                            1,
+                                        ),
+                                        span: Span {
+                                            source: SourceId(
+                                                1,
+                                            ),
+                                            start: 35,
+                                            end: 36,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    source: SourceId(
+                                        1,
+                                    ),
+                                    start: 21,
+                                    end: 36,
+                                },
+                            },
+                        ),
+                        While(
+                            HirWhile {
+                                id: HirId(
+                                    7,
+                                ),
+                                condition: Binary(
+                                    HirBinary {
+                                        id: HirId(
+                                            8,
+                                        ),
+                                        op: Gt,
+                                        lhs: Name(
+                                            HirNameRef {
+                                                id: HirId(
+                                                    9,
+                                                ),
+                                                name: Symbol(
+                                                    2,
+                                                ),
+                                                span: Span {
+                                                    source: SourceId(
+                                                        1,
+                                                    ),
+                                                    start: 47,
+                                                    end: 54,
+                                                },
+                                            },
+                                        ),
+                                        rhs: Literal(
+                                            Int(
+                                                HirIntLiteral {
+                                                    id: HirId(
+                                                        10,
+                                                    ),
+                                                    value: "0",
+                                                    span: Span {
+                                                        source: SourceId(
+                                                            1,
+                                                        ),
+                                                        start: 57,
+                                                        end: 58,
+                                                    },
+                                                },
+                                            ),
+                                        ),
+                                        span: Span {
+                                            source: SourceId(
+                                                1,
+                                            ),
+                                            start: 47,
+                                            end: 58,
+                                        },
+                                    },
+                                ),
+                                body: HirBlock {
+                                    id: HirId(
+                                        11,
+                                    ),
+                                    statements: [
+                                        Let(
+                                            HirLetBinding {
+                                                id: HirId(
+                                                    12,
+                                                ),
+                                                name: Symbol(
+                                                    3,
+                                                ),
+                                                value: Name(
+                                                    HirNameRef {
+                                                        id: HirId(
+                                                            13,
+                                                        ),
+                                                        name: Symbol(
+                                                            2,
+                                                        ),
+                                                        span: Span {
+                                                            source: SourceId(
+                                                                1,
+                                                            ),
+                                                            start: 76,
+                                                            end: 83,
+                                                        },
+                                                    },
+                                                ),
+                                                span: Span {
+                                                    source: SourceId(
+                                                        1,
+                                                    ),
+                                                    start: 68,
+                                                    end: 83,
+                                                },
+                                            },
+                                        ),
+                                        Let(
+                                            HirLetBinding {
+                                                id: HirId(
+                                                    14,
+                                                ),
+                                                name: Symbol(
+                                                    2,
+                                                ),
+                                                value: Binary(
+                                                    HirBinary {
+                                                        id: HirId(
+                                                            15,
+                                                        ),
+                                                        op: Sub,
+                                                        lhs: Name(
+                                                            HirNameRef {
+                                                                id: HirId(
+                                                                    16,
+                                                                ),
+                                                                name: Symbol(
+                                                                    2,
+                                                                ),
+                                                                span: Span {
+                                                                    source: SourceId(
+                                                                        1,
+                                                                    ),
+                                                                    start: 106,
+                                                                    end: 113,
+                                                                },
+                                                            },
+                                                        ),
+                                                        rhs: Literal(
+                                                            Int(
+                                                                HirIntLiteral {
+                                                                    id: HirId(
+                                                                        17,
+                                                                    ),
+                                                                    value: "1",
+                                                                    span: Span {
+                                                                        source: SourceId(
+                                                                            1,
+                                                                        ),
+                                                                        start: 116,
+                                                                        end: 117,
+                                                                    },
+                                                                },
+                                                            ),
+                                                        ),
+                                                        span: Span {
+                                                            source: SourceId(
+                                                                1,
+                                                            ),
+                                                            start: 106,
+                                                            end: 117,
+                                                        },
+                                                    },
+                                                ),
+                                                span: Span {
+                                                    source: SourceId(
+                                                        1,
+                                                    ),
+                                                    start: 92,
+                                                    end: 117,
+                                                },
+                                            },
+                                        ),
+                                    ],
+                                    tail: Some(
+                                        Literal(
+                                            Unit(
+                                                HirUnitLiteral {
+                                                    id: HirId(
+                                                        18,
+                                                    ),
+                                                    span: Span {
+                                                        source: SourceId(
+                                                            1,
+                                                        ),
+                                                        start: 126,
+                                                        end: 128,
+                                                    },
+                                                },
+                                            ),
+                                        ),
+                                    ),
+                                    span: Span {
+                                        source: SourceId(
+                                            1,
+                                        ),
+                                        start: 58,
+                                        end: 133,
+                                    },
+                                },
+                                span: Span {
+                                    source: SourceId(
+                                        1,
+                                    ),
+                                    start: 41,
+                                    end: 133,
+                                },
+                            },
+                        ),
+                    ],
+                    tail: Some(
+                        Literal(
+                            Unit(
+                                HirUnitLiteral {
+                                    id: HirId(
+                                        19,
+                                    ),
+                                    span: Span {
+                                        source: SourceId(
+                                            1,
+                                        ),
+                                        start: 133,
+                                        end: 135,
+                                    },
+                                },
+                            ),
+                        ),
+                    ),
+                    span: Span {
+                        source: SourceId(
+                            1,
+                        ),
+                        start: 15,
+                        end: 136,
+                    },
+                },
+                span: Span {
+                    source: SourceId(
+                        1,
+                    ),
+                    start: 0,
+                    end: 136,
+                },
+            },
+        ),
+    ],
+    interner: SymbolInterner {
+        strings: {
+            "countdown",
+            "n",
+            "current",
+            "_",
+        },
+    },
+}
+---
+[]

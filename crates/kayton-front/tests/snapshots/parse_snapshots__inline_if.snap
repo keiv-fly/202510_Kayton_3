@@ -1,0 +1,280 @@
+---
+source: crates/kayton-front/tests/parse_snapshots.rs
+assertion_line: 38
+expression: "format!(\"{:#?}\\n---\\n{:#?}\", output.module, output.diagnostics)"
+---
+HirModule {
+    id: HirId(
+        1,
+    ),
+    items: [
+        Function(
+            HirFunction {
+                id: HirId(
+                    2,
+                ),
+                name: Symbol(
+                    0,
+                ),
+                params: [
+                    HirParam {
+                        id: HirId(
+                            3,
+                        ),
+                        name: Symbol(
+                            1,
+                        ),
+                        span: Span {
+                            source: SourceId(
+                                1,
+                            ),
+                            start: 12,
+                            end: 13,
+                        },
+                    },
+                ],
+                body: HirBlock {
+                    id: HirId(
+                        4,
+                    ),
+                    statements: [
+                        Let(
+                            HirLetBinding {
+                                id: HirId(
+                                    5,
+                                ),
+                                name: Symbol(
+                                    2,
+                                ),
+                                value: If(
+                                    HirIf {
+                                        id: HirId(
+                                            6,
+                                        ),
+                                        condition: Binary(
+                                            HirBinary {
+                                                id: HirId(
+                                                    7,
+                                                ),
+                                                op: Lt,
+                                                lhs: Name(
+                                                    HirNameRef {
+                                                        id: HirId(
+                                                            8,
+                                                        ),
+                                                        name: Symbol(
+                                                            1,
+                                                        ),
+                                                        span: Span {
+                                                            source: SourceId(
+                                                                1,
+                                                            ),
+                                                            start: 34,
+                                                            end: 35,
+                                                        },
+                                                    },
+                                                ),
+                                                rhs: Literal(
+                                                    Int(
+                                                        HirIntLiteral {
+                                                            id: HirId(
+                                                                9,
+                                                            ),
+                                                            value: "0",
+                                                            span: Span {
+                                                                source: SourceId(
+                                                                    1,
+                                                                ),
+                                                                start: 38,
+                                                                end: 39,
+                                                            },
+                                                        },
+                                                    ),
+                                                ),
+                                                span: Span {
+                                                    source: SourceId(
+                                                        1,
+                                                    ),
+                                                    start: 34,
+                                                    end: 39,
+                                                },
+                                            },
+                                        ),
+                                        then_branch: HirBlock {
+                                            id: HirId(
+                                                10,
+                                            ),
+                                            statements: [],
+                                            tail: Some(
+                                                Unary(
+                                                    HirUnary {
+                                                        id: HirId(
+                                                            11,
+                                                        ),
+                                                        op: Neg,
+                                                        expr: Literal(
+                                                            Int(
+                                                                HirIntLiteral {
+                                                                    id: HirId(
+                                                                        12,
+                                                                    ),
+                                                                    value: "1",
+                                                                    span: Span {
+                                                                        source: SourceId(
+                                                                            1,
+                                                                        ),
+                                                                        start: 42,
+                                                                        end: 43,
+                                                                    },
+                                                                },
+                                                            ),
+                                                        ),
+                                                        span: Span {
+                                                            source: SourceId(
+                                                                1,
+                                                            ),
+                                                            start: 41,
+                                                            end: 43,
+                                                        },
+                                                    },
+                                                ),
+                                            ),
+                                            span: Span {
+                                                source: SourceId(
+                                                    1,
+                                                ),
+                                                start: 39,
+                                                end: 43,
+                                            },
+                                        },
+                                        else_branch: Some(
+                                            HirBlock {
+                                                id: HirId(
+                                                    13,
+                                                ),
+                                                statements: [],
+                                                tail: Some(
+                                                    Literal(
+                                                        Int(
+                                                            HirIntLiteral {
+                                                                id: HirId(
+                                                                    14,
+                                                                ),
+                                                                value: "1",
+                                                                span: Span {
+                                                                    source: SourceId(
+                                                                        1,
+                                                                    ),
+                                                                    start: 50,
+                                                                    end: 51,
+                                                                },
+                                                            },
+                                                        ),
+                                                    ),
+                                                ),
+                                                span: Span {
+                                                    source: SourceId(
+                                                        1,
+                                                    ),
+                                                    start: 48,
+                                                    end: 51,
+                                                },
+                                            },
+                                        ),
+                                        span: Span {
+                                            source: SourceId(
+                                                1,
+                                            ),
+                                            start: 31,
+                                            end: 43,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    source: SourceId(
+                                        1,
+                                    ),
+                                    start: 20,
+                                    end: 43,
+                                },
+                            },
+                        ),
+                    ],
+                    tail: None,
+                    span: Span {
+                        source: SourceId(
+                            1,
+                        ),
+                        start: 14,
+                        end: 86,
+                    },
+                },
+                span: Span {
+                    source: SourceId(
+                        1,
+                    ),
+                    start: 0,
+                    end: 86,
+                },
+            },
+        ),
+    ],
+    interner: SymbolInterner {
+        strings: {
+            "absolute",
+            "x",
+            "sign",
+        },
+    },
+}
+---
+[
+    Diagnostic {
+        message: "expected `:`",
+        span: Span {
+            source: SourceId(
+                1,
+            ),
+            start: 64,
+            end: 65,
+        },
+        severity: Error,
+        notes: [],
+    },
+    Diagnostic {
+        message: "expected expression",
+        span: Span {
+            source: SourceId(
+                1,
+            ),
+            start: 79,
+            end: 79,
+        },
+        severity: Error,
+        notes: [],
+    },
+    Diagnostic {
+        message: "expected `fn` or `let`",
+        span: Span {
+            source: SourceId(
+                1,
+            ),
+            start: 86,
+            end: 90,
+        },
+        severity: Error,
+        notes: [],
+    },
+    Diagnostic {
+        message: "expected `fn` or `let`",
+        span: Span {
+            source: SourceId(
+                1,
+            ),
+            start: 100,
+            end: 100,
+        },
+        severity: Error,
+        notes: [],
+    },
+]

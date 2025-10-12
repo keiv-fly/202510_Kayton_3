@@ -1,0 +1,21 @@
+[package]
+name = "kayton-front"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0 OR MIT"
+description = "Kayton language frontend (lexer, parser, HIR lowering)"
+
+[dependencies]
+thiserror = "1.0"
+indexmap = "2.2"
+smol_str = "0.2"
+rustc-hash = "1.1"
+serde = { version = "1.0", features = ["derive"], optional = true }
+
+[dev-dependencies]
+insta = { version = "1.39", features = ["yaml"] }
+pretty_assertions = "1.4"
+
+[features]
+default = []
+serde = ["dep:serde"]

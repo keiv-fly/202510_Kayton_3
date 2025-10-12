@@ -1,0 +1,170 @@
+---
+source: crates/kayton-front/tests/parse_snapshots.rs
+assertion_line: 11
+expression: "format!(\"{:#?}\\n---\\n{:#?}\", output.module, output.diagnostics)"
+---
+HirModule {
+    id: HirId(
+        1,
+    ),
+    items: [
+        Function(
+            HirFunction {
+                id: HirId(
+                    2,
+                ),
+                name: Symbol(
+                    0,
+                ),
+                params: [
+                    HirParam {
+                        id: HirId(
+                            3,
+                        ),
+                        name: Symbol(
+                            1,
+                        ),
+                        span: Span {
+                            source: SourceId(
+                                1,
+                            ),
+                            start: 7,
+                            end: 8,
+                        },
+                    },
+                    HirParam {
+                        id: HirId(
+                            4,
+                        ),
+                        name: Symbol(
+                            2,
+                        ),
+                        span: Span {
+                            source: SourceId(
+                                1,
+                            ),
+                            start: 10,
+                            end: 11,
+                        },
+                    },
+                ],
+                body: HirBlock {
+                    id: HirId(
+                        5,
+                    ),
+                    statements: [
+                        Let(
+                            HirLetBinding {
+                                id: HirId(
+                                    6,
+                                ),
+                                name: Symbol(
+                                    3,
+                                ),
+                                value: Binary(
+                                    HirBinary {
+                                        id: HirId(
+                                            7,
+                                        ),
+                                        op: Add,
+                                        lhs: Name(
+                                            HirNameRef {
+                                                id: HirId(
+                                                    8,
+                                                ),
+                                                name: Symbol(
+                                                    1,
+                                                ),
+                                                span: Span {
+                                                    source: SourceId(
+                                                        1,
+                                                    ),
+                                                    start: 30,
+                                                    end: 31,
+                                                },
+                                            },
+                                        ),
+                                        rhs: Name(
+                                            HirNameRef {
+                                                id: HirId(
+                                                    9,
+                                                ),
+                                                name: Symbol(
+                                                    2,
+                                                ),
+                                                span: Span {
+                                                    source: SourceId(
+                                                        1,
+                                                    ),
+                                                    start: 34,
+                                                    end: 35,
+                                                },
+                                            },
+                                        ),
+                                        span: Span {
+                                            source: SourceId(
+                                                1,
+                                            ),
+                                            start: 30,
+                                            end: 35,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    source: SourceId(
+                                        1,
+                                    ),
+                                    start: 18,
+                                    end: 35,
+                                },
+                            },
+                        ),
+                    ],
+                    tail: Some(
+                        Name(
+                            HirNameRef {
+                                id: HirId(
+                                    10,
+                                ),
+                                name: Symbol(
+                                    3,
+                                ),
+                                span: Span {
+                                    source: SourceId(
+                                        1,
+                                    ),
+                                    start: 40,
+                                    end: 45,
+                                },
+                            },
+                        ),
+                    ),
+                    span: Span {
+                        source: SourceId(
+                            1,
+                        ),
+                        start: 12,
+                        end: 46,
+                    },
+                },
+                span: Span {
+                    source: SourceId(
+                        1,
+                    ),
+                    start: 0,
+                    end: 46,
+                },
+            },
+        ),
+    ],
+    interner: SymbolInterner {
+        strings: {
+            "add",
+            "a",
+            "b",
+            "total",
+        },
+    },
+}
+---
+[]

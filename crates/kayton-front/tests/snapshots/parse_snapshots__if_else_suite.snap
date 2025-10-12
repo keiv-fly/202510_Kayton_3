@@ -1,0 +1,279 @@
+---
+source: crates/kayton-front/tests/parse_snapshots.rs
+assertion_line: 25
+expression: "format!(\"{:#?}\\n---\\n{:#?}\", output.module, output.diagnostics)"
+---
+HirModule {
+    id: HirId(
+        1,
+    ),
+    items: [
+        Function(
+            HirFunction {
+                id: HirId(
+                    2,
+                ),
+                name: Symbol(
+                    0,
+                ),
+                params: [
+                    HirParam {
+                        id: HirId(
+                            3,
+                        ),
+                        name: Symbol(
+                            1,
+                        ),
+                        span: Span {
+                            source: SourceId(
+                                1,
+                            ),
+                            start: 12,
+                            end: 13,
+                        },
+                    },
+                ],
+                body: HirBlock {
+                    id: HirId(
+                        4,
+                    ),
+                    statements: [],
+                    tail: Some(
+                        If(
+                            HirIf {
+                                id: HirId(
+                                    5,
+                                ),
+                                condition: Binary(
+                                    HirBinary {
+                                        id: HirId(
+                                            6,
+                                        ),
+                                        op: Gt,
+                                        lhs: Name(
+                                            HirNameRef {
+                                                id: HirId(
+                                                    7,
+                                                ),
+                                                name: Symbol(
+                                                    1,
+                                                ),
+                                                span: Span {
+                                                    source: SourceId(
+                                                        1,
+                                                    ),
+                                                    start: 23,
+                                                    end: 24,
+                                                },
+                                            },
+                                        ),
+                                        rhs: Literal(
+                                            Int(
+                                                HirIntLiteral {
+                                                    id: HirId(
+                                                        8,
+                                                    ),
+                                                    value: "0",
+                                                    span: Span {
+                                                        source: SourceId(
+                                                            1,
+                                                        ),
+                                                        start: 27,
+                                                        end: 28,
+                                                    },
+                                                },
+                                            ),
+                                        ),
+                                        span: Span {
+                                            source: SourceId(
+                                                1,
+                                            ),
+                                            start: 23,
+                                            end: 28,
+                                        },
+                                    },
+                                ),
+                                then_branch: HirBlock {
+                                    id: HirId(
+                                        9,
+                                    ),
+                                    statements: [],
+                                    tail: Some(
+                                        Literal(
+                                            String(
+                                                HirStringLiteral {
+                                                    id: HirId(
+                                                        10,
+                                                    ),
+                                                    value: "positive",
+                                                    span: Span {
+                                                        source: SourceId(
+                                                            1,
+                                                        ),
+                                                        start: 38,
+                                                        end: 48,
+                                                    },
+                                                },
+                                            ),
+                                        ),
+                                    ),
+                                    span: Span {
+                                        source: SourceId(
+                                            1,
+                                        ),
+                                        start: 28,
+                                        end: 53,
+                                    },
+                                },
+                                else_branch: Some(
+                                    HirBlock {
+                                        id: HirId(
+                                            11,
+                                        ),
+                                        statements: [],
+                                        tail: Some(
+                                            Binary(
+                                                HirBinary {
+                                                    id: HirId(
+                                                        12,
+                                                    ),
+                                                    op: Lt,
+                                                    lhs: Name(
+                                                        HirNameRef {
+                                                            id: HirId(
+                                                                13,
+                                                            ),
+                                                            name: Symbol(
+                                                                1,
+                                                            ),
+                                                            span: Span {
+                                                                source: SourceId(
+                                                                    1,
+                                                                ),
+                                                                start: 58,
+                                                                end: 59,
+                                                            },
+                                                        },
+                                                    ),
+                                                    rhs: Literal(
+                                                        Int(
+                                                            HirIntLiteral {
+                                                                id: HirId(
+                                                                    14,
+                                                                ),
+                                                                value: "0",
+                                                                span: Span {
+                                                                    source: SourceId(
+                                                                        1,
+                                                                    ),
+                                                                    start: 62,
+                                                                    end: 63,
+                                                                },
+                                                            },
+                                                        ),
+                                                    ),
+                                                    span: Span {
+                                                        source: SourceId(
+                                                            1,
+                                                        ),
+                                                        start: 58,
+                                                        end: 63,
+                                                    },
+                                                },
+                                            ),
+                                        ),
+                                        span: Span {
+                                            source: SourceId(
+                                                1,
+                                            ),
+                                            start: 58,
+                                            end: 63,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    source: SourceId(
+                                        1,
+                                    ),
+                                    start: 20,
+                                    end: 53,
+                                },
+                            },
+                        ),
+                    ),
+                    span: Span {
+                        source: SourceId(
+                            1,
+                        ),
+                        start: 14,
+                        end: 88,
+                    },
+                },
+                span: Span {
+                    source: SourceId(
+                        1,
+                    ),
+                    start: 0,
+                    end: 88,
+                },
+            },
+        ),
+    ],
+    interner: SymbolInterner {
+        strings: {
+            "classify",
+            "x",
+        },
+    },
+}
+---
+[
+    Diagnostic {
+        message: "expected expression",
+        span: Span {
+            source: SourceId(
+                1,
+            ),
+            start: 63,
+            end: 64,
+        },
+        severity: Error,
+        notes: [],
+    },
+    Diagnostic {
+        message: "expected expression",
+        span: Span {
+            source: SourceId(
+                1,
+            ),
+            start: 73,
+            end: 73,
+        },
+        severity: Error,
+        notes: [],
+    },
+    Diagnostic {
+        message: "expected `fn` or `let`",
+        span: Span {
+            source: SourceId(
+                1,
+            ),
+            start: 88,
+            end: 92,
+        },
+        severity: Error,
+        notes: [],
+    },
+    Diagnostic {
+        message: "expected `fn` or `let`",
+        span: Span {
+            source: SourceId(
+                1,
+            ),
+            start: 102,
+            end: 102,
+        },
+        severity: Error,
+        notes: [],
+    },
+]
