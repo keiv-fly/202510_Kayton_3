@@ -1,0 +1,14 @@
+[package]
+name = "kayton-vm"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kayton-bytecode = { path = "../kayton-bytecode" }
+thiserror = "1"
+
+[dev-dependencies]
+kayton-emitter-bc = { path = "../kayton-emitter-bc" }
+kayton-front = { path = "../kayton-front" }
+kayton-sema = { path = "../kayton-sema" }
+pretty_assertions = "1"

@@ -1,0 +1,17 @@
+[package]
+name = "kayton-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+kayton-emitter-bc = { path = "../kayton-emitter-bc" }
+kayton-front = { path = "../kayton-front" }
+kayton-sema = { path = "../kayton-sema" }
+kayton-vm = { path = "../kayton-vm" }
+thiserror = "1"
+
+[dev-dependencies]
+assert_cmd = "2"
+tempfile = "3"
