@@ -1,6 +1,11 @@
 [workspace]
 members = [
     "crates/kayton-front",
+    "crates/kayton-sema",
+    "crates/kayton-bytecode",
+    "crates/kayton-emitter-bc",
+    "crates/kayton-vm",
+    "crates/kayton-cli",
     "xtask",
 ]
 resolver = "2"

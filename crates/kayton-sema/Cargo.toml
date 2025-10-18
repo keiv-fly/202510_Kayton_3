@@ -1,0 +1,12 @@
+[package]
+name = "kayton-sema"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kayton-front = { path = "../kayton-front" }
+smol_str = "0.2"
+thiserror = "1"
+
+[dev-dependencies]
+pretty_assertions = "1"
