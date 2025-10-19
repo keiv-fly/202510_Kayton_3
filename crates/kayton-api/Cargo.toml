@@ -1,0 +1,12 @@
+[package]
+name = "kayton-api"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+kayton-abi = { path = "../kayton-abi" }
+thiserror = "1.0"
+
+[lints]
+workspace = true

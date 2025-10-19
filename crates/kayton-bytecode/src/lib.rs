@@ -3,6 +3,7 @@ use smol_str::SmolStr;
 
 pub type ConstId = u32;
 pub type FunctionId = u32;
+pub type HostSlot = u32;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Constant {
@@ -62,6 +63,8 @@ pub enum Instruction {
     Gt,
     Ge,
     Call(FunctionId, u16),
+    CallHost(HostSlot, u16),
+    CallHostDynamic(ConstId, u16),
     Return,
     Pop,
 }
@@ -151,6 +154,12 @@ impl Verifier {
                     Instruction::Call(func, _) => {
                         if module.functions.get(*func as usize).is_none() {
                             return Err(VerificationError::BadFunction { instruction: idx });
+                        }
+                    }
+                    Instruction::CallHost(_, _) => {}
+                    Instruction::CallHostDynamic(const_id, _) => {
+                        if module.constants.get(*const_id as usize).is_none() {
+                            return Err(VerificationError::BadConstant { instruction: idx });
                         }
                     }
                     Instruction::Jump(target) | Instruction::JumpIfFalse(target) => {

@@ -6,6 +6,11 @@ members = [
     "crates/kayton-emitter-bc",
     "crates/kayton-vm",
     "crates/kayton-cli",
+    "crates/kayton-abi",
+    "crates/kayton-api",
+    "crates/kayton-host",
+    "crates/kayton-plugin-macros",
+    "crates/kayton-stdlib",
     "xtask",
 ]
 resolver = "2"

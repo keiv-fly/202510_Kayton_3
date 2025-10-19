@@ -10,6 +10,9 @@ kayton-emitter-bc = { path = "../kayton-emitter-bc" }
 kayton-front = { path = "../kayton-front" }
 kayton-sema = { path = "../kayton-sema" }
 kayton-vm = { path = "../kayton-vm" }
+kayton-api = { path = "../kayton-api" }
+kayton-host = { path = "../kayton-host" }
+kayton-stdlib = { path = "../kayton-stdlib" }
 thiserror = "1"
 
 [dev-dependencies]

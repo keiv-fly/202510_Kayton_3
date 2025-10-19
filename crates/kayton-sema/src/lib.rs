@@ -225,7 +225,6 @@ pub mod fast {
                         self.types.insert(name.id, binding.ty.clone());
                         binding.ty
                     } else {
-                        self.error("unknown name", name.span);
                         FastType::Unknown
                     }
                 }

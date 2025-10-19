@@ -260,6 +260,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4a5f13b858c8d314ee3e8f639011f7ccefe71f97f96e50151fb991f267928e2c"
 
 [[package]]
+name = "kayton-abi"
+version = "0.1.0"
+
+[[package]]
+name = "kayton-api"
+version = "0.1.0"
+dependencies = [
+ "kayton-abi",
+ "thiserror",
+]
+
+[[package]]
 name = "kayton-bytecode"
 version = "0.1.0"
 dependencies = [
@@ -277,9 +289,12 @@ dependencies = [
  "anyhow",
  "assert_cmd",
  "clap",
+ "kayton-api",
  "kayton-emitter-bc",
  "kayton-front",
+ "kayton-host",
  "kayton-sema",
+ "kayton-stdlib",
  "kayton-vm",
  "tempfile",
  "thiserror",
@@ -310,6 +325,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "kayton-host"
+version = "0.1.0"
+dependencies = [
+ "kayton-abi",
+ "kayton-api",
+ "thiserror",
+]
+
+[[package]]
+name = "kayton-plugin-macros"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "kayton-sema"
 version = "0.1.0"
 dependencies = [
@@ -320,13 +353,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "kayton-stdlib"
+version = "0.1.0"
+dependencies = [
+ "kayton-api",
+ "kayton-host",
+ "kayton-plugin-macros",
+]
+
+[[package]]
 name = "kayton-vm"
 version = "0.1.0"
 dependencies = [
+ "kayton-api",
  "kayton-bytecode",
  "kayton-emitter-bc",
  "kayton-front",
+ "kayton-host",
  "kayton-sema",
+ "kayton-stdlib",
  "pretty_assertions",
  "thiserror",
 ]

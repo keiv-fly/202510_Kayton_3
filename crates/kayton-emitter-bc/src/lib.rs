@@ -299,15 +299,30 @@ impl<'a, 'b> FunctionBuilder<'a, 'b> {
                         })
                     }
                 };
-                let func_id = self
-                    .emitter
-                    .function_index(name.name)
-                    .ok_or(EmitterError::UnknownName { span: name.span })?;
-                for arg in &call.args {
-                    self.emit_expr(arg)?;
+                if let Some(func_id) = self.emitter.function_index(name.name) {
+                    for arg in &call.args {
+                        self.emit_expr(arg)?;
+                    }
+                    self.instructions
+                        .push(Instruction::Call(func_id, call.args.len() as u16));
+                } else {
+                    let symbol = self
+                        .emitter
+                        .module
+                        .interner
+                        .resolve(name.name)
+                        .ok_or(EmitterError::UnknownName { span: name.span })?;
+                    for arg in &call.args {
+                        self.emit_expr(arg)?;
+                    }
+                    let const_id = self
+                        .emitter
+                        .add_constant(Constant::String(symbol.to_string()));
+                    self.instructions.push(Instruction::CallHostDynamic(
+                        const_id,
+                        call.args.len() as u16,
+                    ));
                 }
-                self.instructions
-                    .push(Instruction::Call(func_id, call.args.len() as u16));
             }
             HirExpr::If(if_expr) => {
                 self.emit_expr(&if_expr.condition)?;
