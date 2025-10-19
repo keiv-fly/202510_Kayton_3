@@ -1,28 +1,44 @@
-use kayton_bytecode::{BytecodeModule, Constant, FunctionId, Instruction};
+use std::sync::Arc;
+
+use kayton_api::{KayCtx, KayError, KayHandle, KayValueKind};
+use kayton_bytecode::{BytecodeModule, ConstId, Constant, FunctionId, HostSlot, Instruction};
+use kayton_host::KayHost;
 use thiserror::Error;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum Value {
     Int(i64),
     Bool(bool),
-    String(String),
+    Str(Arc<str>),
     Unit,
+    Handle(KayHandle),
+}
+
+impl PartialEq for Value {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Value::Int(lhs), Value::Int(rhs)) => lhs == rhs,
+            (Value::Bool(lhs), Value::Bool(rhs)) => lhs == rhs,
+            (Value::Str(lhs), Value::Str(rhs)) => lhs == rhs,
+            (Value::Unit, Value::Unit) => true,
+            (Value::Handle(lhs), Value::Handle(rhs)) => lhs.raw() == rhs.raw(),
+            _ => false,
+        }
+    }
 }
 
 impl Value {
     fn as_int(&self) -> Option<i64> {
-        if let Value::Int(v) = self {
-            Some(*v)
-        } else {
-            None
+        match self {
+            Value::Int(v) => Some(*v),
+            _ => None,
         }
     }
 
     fn as_bool(&self) -> Option<bool> {
-        if let Value::Bool(v) = self {
-            Some(*v)
-        } else {
-            None
+        match self {
+            Value::Bool(v) => Some(*v),
+            _ => None,
         }
     }
 }
@@ -32,7 +48,7 @@ impl From<&Constant> for Value {
         match constant {
             Constant::Int(v) => Value::Int(*v),
             Constant::Bool(v) => Value::Bool(*v),
-            Constant::String(s) => Value::String(s.clone()),
+            Constant::String(s) => Value::Str(Arc::from(s.as_str())),
             Constant::Unit => Value::Unit,
         }
     }
@@ -44,6 +60,10 @@ pub enum VmError {
     EntryNotFound(String),
     #[error("function index {0} out of range")]
     BadFunction(FunctionId),
+    #[error("constant index {0} out of range")]
+    BadConstant(ConstId),
+    #[error("host call requires a string constant")]
+    HostNameType,
     #[error("local index out of range")]
     BadLocal,
     #[error("stack underflow")]
@@ -52,6 +72,14 @@ pub enum VmError {
     TypeError { expected: &'static str },
     #[error("call arity mismatch: expected {expected}, found {found}")]
     CallArity { expected: usize, found: usize },
+    #[error("host call failed: {0:?}")]
+    HostFailure(KayError),
+}
+
+impl From<KayError> for VmError {
+    fn from(value: KayError) -> Self {
+        VmError::HostFailure(value)
+    }
 }
 
 struct Frame {
@@ -70,11 +98,12 @@ impl Frame {
     }
 }
 
-pub fn run_module(module: &BytecodeModule, entry: &str) -> Result<Value, VmError> {
+pub fn run_module(module: &BytecodeModule, entry: &str, host: &KayHost) -> Result<Value, VmError> {
     let entry_id = module
         .function_index(entry)
         .ok_or_else(|| VmError::EntryNotFound(entry.to_string()))?;
-    let mut vm = Vm::new(module);
+    let ctx = host.api_ctx();
+    let mut vm = Vm::new(module, ctx);
     vm.run(entry_id)
 }
 
@@ -82,14 +111,16 @@ struct Vm<'a> {
     module: &'a BytecodeModule,
     stack: Vec<Value>,
     frames: Vec<Frame>,
+    ctx: KayCtx,
 }
 
 impl<'a> Vm<'a> {
-    fn new(module: &'a BytecodeModule) -> Self {
+    fn new(module: &'a BytecodeModule, ctx: KayCtx) -> Self {
         Self {
             module,
             stack: Vec::new(),
             frames: Vec::new(),
+            ctx,
         }
     }
 
@@ -122,9 +153,7 @@ impl<'a> Vm<'a> {
                         .map(Value::from)
                         .unwrap_or(Value::Unit);
                     self.stack.push(value);
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::LoadLocal(idx) => {
                     let value = self.frames[frame_index]
@@ -133,9 +162,7 @@ impl<'a> Vm<'a> {
                         .cloned()
                         .ok_or(VmError::BadLocal)?;
                     self.stack.push(value);
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::StoreLocal(idx) => {
                     let value = self.pop()?;
@@ -165,89 +192,65 @@ impl<'a> Vm<'a> {
                 }
                 Instruction::Add => {
                     self.binary_int(|a, b| a + b)?;
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Sub => {
                     self.binary_int(|a, b| a - b)?;
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Mul => {
                     self.binary_int(|a, b| a * b)?;
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Div => {
                     self.binary_int(|a, b| a / b)?;
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Neg => {
                     let value = self.pop_int()?;
                     self.stack.push(Value::Int(-value));
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Not => {
                     let value = self.pop_bool()?;
                     self.stack.push(Value::Bool(!value));
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Eq => {
                     let rhs = self.pop_int()?;
                     let lhs = self.pop_int()?;
                     self.stack.push(Value::Bool(lhs == rhs));
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Ne => {
                     let rhs = self.pop_int()?;
                     let lhs = self.pop_int()?;
                     self.stack.push(Value::Bool(lhs != rhs));
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Lt => {
                     let rhs = self.pop_int()?;
                     let lhs = self.pop_int()?;
                     self.stack.push(Value::Bool(lhs < rhs));
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Le => {
                     let rhs = self.pop_int()?;
                     let lhs = self.pop_int()?;
                     self.stack.push(Value::Bool(lhs <= rhs));
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Gt => {
                     let rhs = self.pop_int()?;
                     let lhs = self.pop_int()?;
                     self.stack.push(Value::Bool(lhs > rhs));
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Ge => {
                     let rhs = self.pop_int()?;
                     let lhs = self.pop_int()?;
                     self.stack.push(Value::Bool(lhs >= rhs));
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Call(func, arg_count) => {
                     let mut args = Vec::with_capacity(arg_count as usize);
@@ -256,6 +259,26 @@ impl<'a> Vm<'a> {
                     }
                     args.reverse();
                     self.call_function(func, args)?;
+                }
+                Instruction::CallHost(slot, arg_count) => {
+                    let result = self.invoke_host(slot, arg_count)?;
+                    self.stack.push(result);
+                    self.advance_ip(frame_index);
+                }
+                Instruction::CallHostDynamic(name_const, arg_count) => {
+                    let name = self
+                        .module
+                        .constants
+                        .get(name_const as usize)
+                        .ok_or(VmError::BadConstant(name_const))?;
+                    let symbol = if let Constant::String(sym) = name {
+                        sym.clone()
+                    } else {
+                        return Err(VmError::HostNameType);
+                    };
+                    let result = self.invoke_host_dynamic(symbol, arg_count)?;
+                    self.stack.push(result);
+                    self.advance_ip(frame_index);
                 }
                 Instruction::Return => {
                     let result = self.stack.pop().unwrap_or(Value::Unit);
@@ -269,10 +292,52 @@ impl<'a> Vm<'a> {
                 }
                 Instruction::Pop => {
                     self.pop()?;
-                    if let Some(frame) = self.frames.get_mut(frame_index) {
-                        frame.ip += 1;
-                    }
+                    self.advance_ip(frame_index);
                 }
+            }
+        }
+    }
+
+    fn invoke_host(&mut self, slot: HostSlot, arg_count: u16) -> Result<Value, VmError> {
+        let args = self.collect_host_args(arg_count)?;
+        let handle = self.ctx.call_slot(slot, &args).map_err(VmError::from)?;
+        self.handle_to_value(handle)
+    }
+
+    fn invoke_host_dynamic(&mut self, name: String, arg_count: u16) -> Result<Value, VmError> {
+        let args = self.collect_host_args(arg_count)?;
+        let handle = self.ctx.call_dynamic(&name, &args).map_err(VmError::from)?;
+        self.handle_to_value(handle)
+    }
+
+    fn collect_host_args(&mut self, arg_count: u16) -> Result<Vec<KayHandle>, VmError> {
+        let mut handles = Vec::with_capacity(arg_count as usize);
+        for _ in 0..arg_count {
+            let value = self.pop()?;
+            let handle = self.ensure_handle(value)?;
+            handles.push(handle);
+        }
+        handles.reverse();
+        Ok(handles)
+    }
+
+    fn ensure_handle(&mut self, value: Value) -> Result<KayHandle, VmError> {
+        match value {
+            Value::Int(v) => self.ctx.alloc_int(v).map_err(VmError::from),
+            Value::Bool(v) => self.ctx.alloc_bool(v).map_err(VmError::from),
+            Value::Str(s) => self.ctx.alloc_string(s).map_err(VmError::from),
+            Value::Unit => self.ctx.alloc_unit().map_err(VmError::from),
+            Value::Handle(handle) => Ok(handle),
+        }
+    }
+
+    fn handle_to_value(&self, handle: KayHandle) -> Result<Value, VmError> {
+        match handle.describe().map_err(VmError::from)? {
+            KayValueKind::Int(value) => Ok(Value::Int(value)),
+            KayValueKind::Bool(value) => Ok(Value::Bool(value)),
+            KayValueKind::Unit => Ok(Value::Unit),
+            KayValueKind::String(_) | KayValueKind::Bytes(_) | KayValueKind::Capsule { .. } => {
+                Ok(Value::Handle(handle))
             }
         }
     }
@@ -296,6 +361,12 @@ impl<'a> Vm<'a> {
         }
         self.frames.push(Frame::new(func_id, locals));
         Ok(())
+    }
+
+    fn advance_ip(&mut self, frame_index: usize) {
+        if let Some(frame) = self.frames.get_mut(frame_index) {
+            frame.ip += 1;
+        }
     }
 
     fn pop(&mut self) -> Result<Value, VmError> {
@@ -330,6 +401,7 @@ mod tests {
     use super::*;
     use kayton_emitter_bc::emit;
     use kayton_front::tests_support::parse_str;
+    use kayton_host::KayHost;
     use kayton_sema::fast::analyze;
 
     fn compile_and_run(source: &str) -> Value {
@@ -342,7 +414,10 @@ mod tests {
             analysis.diagnostics
         );
         let module = emit(&parsed.module, &analysis).expect("emit");
-        run_module(&module, "main").expect("vm run")
+        let host = KayHost::new();
+        host.register_extensions(kayton_stdlib::extensions())
+            .expect("register stdlib");
+        run_module(&module, "main", &host).expect("vm run")
     }
 
     #[test]
@@ -387,5 +462,16 @@ fn main():
 "#,
         );
         assert_eq!(value, Value::Int(120));
+    }
+
+    #[test]
+    fn calls_host_extension() {
+        let value = compile_and_run(
+            r#"
+fn main():
+    len("hi")
+"#,
+        );
+        assert_eq!(value, Value::Int(2));
     }
 }
